@@ -9,7 +9,7 @@ from tracker.tracker import Tracker
 
 st.sidebar.title("Fire MOT Demo")
 
-weights_path = st.sidebar.selectbox("Yolo Weights (.pt)", ["models/test.pt"])
+weights_path = st.sidebar.selectbox("Yolo Weights (.pt)", ["models/test.pt","models/best.pt"])
 source_type = st.sidebar.selectbox("Video Source", ["Webcam", "Video File"])
 confidence = st.sidebar.slider("Confidence Threshold", 0.1, 1.0, 0.25, 0.05)
 
@@ -28,6 +28,7 @@ def load_model(w_path):
 
 def get_yolo_bboxes(results, conf=0.25, target_cls=None):
     dets = []
+    print(f"Detected {len(results.boxes)} boxes")
     if hasattr(results, "boxes"):
         for box in results.boxes:
             x1, y1, x2, y2 = box.xyxy.cpu().numpy().flatten()
@@ -70,7 +71,7 @@ def run_stream(source, model, conf):
         with torch.no_grad():
             yolo_results = model(frame, conf=conf, verbose=False)[0]
 
-        dets = get_yolo_bboxes(yolo_results, conf=conf, target_cls=0)
+        dets = get_yolo_bboxes(yolo_results, conf=conf, target_cls=2)
         tracks = tracker.track(frame, dets)  # (M,6) [x1,y1,x2,y2,id,conf]
         frame_out = draw_tracks(frame, tracks)
         fps = fps*0.9 + 0.1*(1/(time.time()-prev+1e-8))
