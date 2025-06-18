@@ -13,7 +13,7 @@ class GeneralSettings:
         "min_hits": 3,
         "det_thresh": 0.5,
         "iou_threshold": 0.3,
-        "use_ecc": True,
+        "use_ecc": False,
         "min_box_area": 10,
         "aspect_ratio_thresh": 1.6,
     }

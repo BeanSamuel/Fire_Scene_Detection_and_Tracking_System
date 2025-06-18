@@ -1,5 +1,4 @@
 from ultralytics import YOLO
-import torch
 
 class Detector:
     def __init__( self, weights_path: str, conf: int=0.25, device: str="cpu" ):

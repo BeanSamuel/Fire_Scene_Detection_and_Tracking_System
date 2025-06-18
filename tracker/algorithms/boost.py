@@ -171,16 +171,17 @@ class BoostTrack(object):
             if dets[i, 4] >= self.det_thresh:
                 self.trackers.append(KalmanBoxTracker(dets[i, :]))
 
-        # 組回傳格式 [x1, y1, x2, y2, id, conf]
         ret = []
-        i = len(self.trackers)
-        for trk in reversed(self.trackers):
+        remove_indices = []
+        for i in reversed(range(len(self.trackers))):
+            trk = self.trackers[i]
             d = trk.get_state()[0]
             if (trk.time_since_update < 1) and (trk.hit_streak >= self.min_hits or self.frame_count <= self.min_hits):
                 ret.append(np.concatenate((d, [trk.id + 1], [trk.get_confidence()])).reshape(1, -1))
-            i -= 1
             if trk.time_since_update > self.max_age:
-                self.trackers.pop(i)
+                remove_indices.append(i)
+        for i in remove_indices:
+            self.trackers.pop(i)
         if len(ret) > 0:
             return np.concatenate(ret)
         return np.empty((0, 5))

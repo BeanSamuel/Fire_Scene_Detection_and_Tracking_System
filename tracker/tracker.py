@@ -1,5 +1,6 @@
 import numpy as np
 from tracker.algorithms.boost import BoostTrack
+from tracker.algorithms.boost import BoostTrack, KalmanBoxTracker
 
 class Tracker:
     def __init__(self, name="sequence"):
@@ -12,6 +13,7 @@ class Tracker:
             self.name = name
         self.frame_id = 1
         self.tracker = BoostTrack(video_name=self.name)
+        KalmanBoxTracker.count = 0
 
     def track(self, img, dets):
         if not isinstance(img, np.ndarray) or img.ndim != 3:
